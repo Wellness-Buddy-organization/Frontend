@@ -2,7 +2,7 @@ import Sidebar from "../components/Sidebar";
 
 
 function Dashboard() {
-  return <Sidebar />;
+    return <Sidebar />;
 }
 
 export default Dashboard;
