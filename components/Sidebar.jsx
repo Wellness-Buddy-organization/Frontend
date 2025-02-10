@@ -1,8 +1,18 @@
 import { FaHome, FaClipboardList, FaBell, FaUserCog, FaSignOutAlt } from "react-icons/fa";
 import { MdOutlineHealthAndSafety } from "react-icons/md";
 import { BsGraphUpArrow } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
+import { ENDPOINTS } from "../src/config";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+
+  // Handle Logout
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate(ENDPOINTS.SIGN_IN);
+  };
+
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -15,7 +25,7 @@ const Sidebar = () => {
 
           {/* Navigation Links */}
           <nav className="space-y-4">
-            <NavItem icon={<FaHome />} text="Home" />
+            <NavItem icon={<FaHome />} text="Home" onClick={() => navigate("/dashboard")} />
             <NavItem icon={<MdOutlineHealthAndSafety />} text="Wellness Tracking" />
             <NavItem icon={<FaClipboardList />} text="Reminders" />
             <NavItem icon={<BsGraphUpArrow />} text="Mental Health Support" />
@@ -26,7 +36,7 @@ const Sidebar = () => {
         {/* Bottom Links */}
         <div className="space-y-4">
           <NavItem icon={<FaUserCog />} text="Settings" />
-          <NavItem icon={<FaSignOutAlt />} text="Logout" />
+          <NavItem icon={<FaSignOutAlt />} text="Logout" onClick={handleLogout} />
         </div>
       </aside>
 
@@ -43,8 +53,11 @@ const Sidebar = () => {
 };
 
 // Reusable Navigation Item Component
-const NavItem = ({ icon, text }) => (
-  <div className="flex items-center space-x-3 text-[#0E0828] hover:text-[#1B5E3A] cursor-pointer">
+const NavItem = ({ icon, text, onClick }) => (
+  <div
+    className="flex items-center space-x-3 text-[#0E0828] hover:text-[#1B5E3A] cursor-pointer"
+    onClick={onClick}
+  >
     <span className="text-2xl">{icon}</span>
     <span className="text-lg font-bold">{text}</span>
   </div>
