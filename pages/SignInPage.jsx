@@ -1,7 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
+import { PulseLoader } from "react-spinners"; // Loader
+import { API_URLS, ENDPOINTS } from "../src/config";
 
 const SignInPage = () => {
+    const navigate = useNavigate();
+    const [credentials, setCredentials] = useState({ employee_id: "", password: "" });
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    // Handle input change
+    const handleChange = (e) => {
+        setCredentials({ ...credentials, [e.target.name]: e.target.value });
+        setError(""); // Clear error on input change
+    };
+
+    // Handle form submission
+    const handleSignIn = async (e) => {
+        e.preventDefault();
+        setError("");
+        if (!credentials.employee_id || !credentials.password) {
+            setError("Employee ID and password are required.");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const { data } = await axios.post(API_URLS.SIGN_IN, credentials);
+            localStorage.setItem("token", data.token);
+            navigate(ENDPOINTS.DASHBOARD);
+        } catch (error) {
+            setError(error.response?.data?.message || "Invalid Employee ID or password");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="h-screen w-full flex">
             {/* Left Section - Sign In Form */}
@@ -12,15 +48,18 @@ const SignInPage = () => {
                         Enter the information you entered while registering.
                     </p>
 
+                    {/* Show Error Message */}
+                    {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
                     {/* Sign In Form */}
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={handleSignIn}>
                         <div>
-                            <label className="block text-gray-700 font-medium">Email</label>
-                            <input type="email" placeholder="Email" className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-deepGreen" />
+                            <label className="block text-gray-700 font-medium">Employee ID</label>
+                            <input type="text" name="employee_id" placeholder="Employee ID" onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-deepGreen" required />
                         </div>
                         <div>
                             <label className="block text-gray-700 font-medium">Password</label>
-                            <input type="password" placeholder="Password" className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-deepGreen" />
+                            <input type="password" name="password" placeholder="Password" onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-deepGreen" required />
                         </div>
 
                         {/* Remember Me & Forgot Password */}
@@ -32,8 +71,8 @@ const SignInPage = () => {
                             <a href="#" className="text-deepGreen font-semibold hover:underline">Forgot Password?</a>
                         </div>
 
-                        <button type="submit" className="w-full bg-[#1B5E3A] text-white py-3 rounded-md font-semibold hover:bg-[#2E7D5C]">
-                            Sign In
+                        <button type="submit" className="w-full bg-[#1B5E3A] text-white py-3 rounded-md font-semibold hover:bg-[#2E7D5C] flex items-center justify-center" disabled={loading}>
+                            {loading ? <PulseLoader color="#fff" size={8} /> : "Sign In"}
                         </button>
                     </form>
 
@@ -52,7 +91,7 @@ const SignInPage = () => {
 
                     {/* Sign Up Redirect */}
                     <p className="text-center mt-4 text-gray-700">
-                        Don’t have an account? <a href="#" className="font-bold text-black hover:underline">create</a>
+                        Don’t have an account? <a href={ENDPOINTS.SIGN_UP} className="font-bold text-black hover:underline">Create</a>
                     </p>
                 </div>
             </div>
@@ -68,12 +107,11 @@ const SignInPage = () => {
                     <p className="text-sm">
                         Enter your personal details and start your journey with us.
                     </p>
-                    <button className="mt-6 bg-[#1B5E3A] px-6 py-2 rounded-md text-white font-semibold hover:bg-[#2E7D5C]">
+                    <button className="mt-6 bg-[#1B5E3A] px-6 py-2 rounded-md text-white font-semibold hover:bg-[#2E7D5C]" onClick={() => navigate(ENDPOINTS.SIGN_UP)}>
                         Sign Up
                     </button>
                 </div>
             </div>
-
         </div>
     );
 };

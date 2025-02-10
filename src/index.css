@@ -1,1 +1,40 @@
 @import "tailwindcss";
+
+@layer base {
+    :root {
+      --color-light-green: #A8D5BA;
+      --color-medium-green: #6BBF8A;
+      --color-green: #4B9B6E;
+      --color-dark-green: #2E7D5C;
+      --color-deep-green: #1B5E3A;
+    }
+  }
+  
+  @layer utilities {
+    /* Text Colors */
+    .text-lightGreen { color: var(--color-light-green); }
+    .text-mediumGreen { color: var(--color-medium-green); }
+    .text-green { color: var(--color-green); }
+    .text-darkGreen { color: var(--color-dark-green); }
+    .text-deepGreen { color: var(--color-deep-green); }
+  
+    /* Background Colors */
+    .bg-lightGreen { background-color: var(--color-light-green); }
+    .bg-mediumGreen { background-color: var(--color-medium-green); }
+    .bg-green { background-color: var(--color-green); }
+    .bg-darkGreen { background-color: var(--color-dark-green); }
+    .bg-deepGreen { background-color: var(--color-deep-green); }
+  
+    /* Hover Effects */
+    .hover\:text-lightGreen:hover { color: var(--color-light-green); }
+    .hover\:text-mediumGreen:hover { color: var(--color-medium-green); }
+    .hover\:text-green:hover { color: var(--color-green); }
+    .hover\:text-darkGreen:hover { color: var(--color-dark-green); }
+    .hover\:text-deepGreen:hover { color: var(--color-deep-green); }
+  
+    .hover\:bg-lightGreen:hover { background-color: var(--color-light-green); }
+    .hover\:bg-mediumGreen:hover { background-color: var(--color-medium-green); }
+    .hover\:bg-green:hover { background-color: var(--color-green); }
+    .hover\:bg-darkGreen:hover { background-color: var(--color-dark-green); }
+    .hover\:bg-deepGreen:hover { background-color: var(--color-deep-green); }
+  }
