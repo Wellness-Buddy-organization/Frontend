@@ -42,14 +42,16 @@ const SignInPage = () => {
             const { data } = await axios.post(API_URLS.SIGN_IN, credentials);
             if (rememberMe) {
                 localStorage.setItem("remembered_employee_id", credentials.employee_id);
-                localStorage.setItem("token", data.token); // Store token in localStorage for persistence
+                localStorage.setItem("token", data.token); 
             } else {
                 localStorage.removeItem("remembered_employee_id");
-                sessionStorage.setItem("token", data.token); // Store token in sessionStorage (expires on tab close)
+                localStorage.setItem("token", data.token); 
             }
 
             navigate(ENDPOINTS.DASHBOARD);
         } catch (error) {
+            console.log(error);
+            
             setError(error.response?.data?.message || "Invalid Employee ID or password");
         } finally {
             setLoading(false);

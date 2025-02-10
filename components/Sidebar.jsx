@@ -1,6 +1,6 @@
 import { FaHome, FaClipboardList, FaBell, FaUserCog, FaSignOutAlt } from "react-icons/fa";
 import { MdOutlineHealthAndSafety } from "react-icons/md";
-import { BsGraphUpArrow } from "react-icons/bs";
+import { BsGraphUpArrow, BsBarChart } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { ENDPOINTS } from "../src/config";
 
@@ -14,41 +14,29 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex">
-      {/* Sidebar */}
-      <aside className="bg-[#A8D5BA] w-64 h-screen p-6 flex flex-col justify-between">
-        {/* Logo */}
-        <div className="flex flex-col space-y-6">
-          <div className="flex items-center">
-            <img src="../assets/logo.png" alt="Wellness Buddy Logo" className="w-[109px] h-[130px]" />
-          </div>
-
-          {/* Navigation Links */}
-          <nav className="space-y-4">
-            <NavItem icon={<FaHome />} text="Home" onClick={() => navigate("/dashboard")} />
-            <NavItem icon={<MdOutlineHealthAndSafety />} text="Wellness Tracking" />
-            <NavItem icon={<FaClipboardList />} text="Reminders" />
-            <NavItem icon={<BsGraphUpArrow />} text="Mental Health Support" />
-            <NavItem icon={<FaUserCog />} text="Work-life Balance" />
-          </nav>
+    <aside className="fixed left-0 top-0 h-full w-64 bg-[#A8D5BA] p-6 flex flex-col justify-between shadow-lg">
+      {/* Logo */}
+      <div className="flex flex-col space-y-6">
+        <div className="flex items-center">
+          <img src="../assets/logo.png" alt="Wellness Buddy Logo" className="w-[109px] h-[130px]" />
         </div>
 
-        {/* Bottom Links */}
-        <div className="space-y-4">
-          <NavItem icon={<FaUserCog />} text="Settings" />
-          <NavItem icon={<FaSignOutAlt />} text="Logout" onClick={handleLogout} />
-        </div>
-      </aside>
+        {/* Navigation Links */}
+        <nav className="space-y-4">
+          <NavItem icon={<FaHome />} text="Home" onClick={() => navigate("/dashboard")} />
+          <NavItem icon={<MdOutlineHealthAndSafety />} text="Wellness Tracking" onClick={() => navigate("/wellness")} />
+          <NavItem icon={<FaClipboardList />} text="Reminders" onClick={() => navigate("/reminders")} />
+          <NavItem icon={<BsGraphUpArrow />} text="Mental Health" onClick={() => navigate("/mental-health")} />
+          <NavItem icon={<BsBarChart />} text="Work-Life Balance" onClick={() => navigate("/work-life")} />
+        </nav>
+      </div>
 
-      {/* Main Content Area */}
-      <main className="flex-1 bg-white p-6">
-        {/* Top Right Notification Icon */}
-        <div className="flex justify-end">
-          <FaBell className="text-[#1B5E3A] text-xl cursor-pointer" />
-        </div>
-        <h1 className="text-2xl font-bold">Welcome to Wellness Buddy</h1>
-      </main>
-    </div>
+      {/* Bottom Links */}
+      <div className="space-y-4">
+        <NavItem icon={<FaUserCog />} text="Settings" onClick={() => navigate("/settings")} />
+        <NavItem icon={<FaSignOutAlt />} text="Logout" onClick={handleLogout} />
+      </div>
+    </aside>
   );
 };
 

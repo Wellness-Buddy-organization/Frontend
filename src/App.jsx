@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Dashboard from "../pages/Dashboard";
 import LandingPage from "../pages/LandingPage";
 import SignupPage from "../pages/SignUpPage";
@@ -8,7 +8,7 @@ import { ENDPOINTS } from "./config";
 
 const App = () => {
     const PrivateRoute = ({ children }) => {
-        return localStorage.getItem("token") ? children : <Navigate to="/signin" />;
+        return localStorage.getItem("token") ? children : <Navigate to={ENDPOINTS.SIGN_IN} />;
       };
     return (
         <Router>
