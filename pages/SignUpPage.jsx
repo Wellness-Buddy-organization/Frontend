@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 import { PulseLoader } from "react-spinners"; // Loader
 import { API_URLS, ENDPOINTS } from "../src/config";
 
@@ -9,7 +9,8 @@ const SignupPage = () => {
   const [user, setUser] = useState({ name: "", employee_id: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false); // New state for success message
+  const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Toggle state
   const navigate = useNavigate();
 
   // Validate inputs
@@ -40,8 +41,8 @@ const SignupPage = () => {
     setLoading(true);
     try {
       await axios.post(API_URLS.SIGN_UP, user);
-      setSuccess(true); 
-    } catch (error) { 
+      setSuccess(true);
+    } catch (error) {
       setError(error.response?.data?.message || "Registration failed");
     } finally {
       setLoading(false);
@@ -99,8 +100,26 @@ const SignupPage = () => {
                 </div>
                 <div>
                   <label className="block text-gray-700 font-medium">Password</label>
-                  <input type="password" name="password" placeholder="Password" onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-deepGreen" required />
-                  <small className="text-gray-500 text-sm">Password must be at least 8 characters, include 1 lowercase, 1 uppercase, 1 number, and 1 special character.</small>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="Password"
+                      onChange={handleChange}
+                      className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-deepGreen pr-10"
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+                  <small className="text-gray-500 text-sm">
+                    Password must be at least 8 characters, include 1 lowercase, 1 uppercase, 1 number, and 1 special character.
+                  </small>
                 </div>
 
                 <button type="submit" className="w-full bg-[#1B5E3A] text-white py-3 rounded-md font-semibold hover:bg-[#2E7D5C] flex items-center justify-center" disabled={loading}>

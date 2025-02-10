@@ -1,15 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 import { PulseLoader } from "react-spinners"; // Loader
 import { API_URLS, ENDPOINTS } from "../src/config";
 
 const SignInPage = () => {
     const navigate = useNavigate();
     const [credentials, setCredentials] = useState({ employee_id: "", password: "" });
+    const [rememberMe, setRememberMe] = useState(false);
+    const [showPassword, setShowPassword] = useState(false); // Toggle state
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
+    // Load stored credentials if "Remember Me" was checked before
+    useEffect(() => {
+        const storedEmployeeID = localStorage.getItem("remembered_employee_id");
+        if (storedEmployeeID) {
+            setCredentials((prev) => ({ ...prev, employee_id: storedEmployeeID }));
+            setRememberMe(true);
+        }
+    }, []);
 
     // Handle input change
     const handleChange = (e) => {
@@ -29,7 +40,14 @@ const SignInPage = () => {
         setLoading(true);
         try {
             const { data } = await axios.post(API_URLS.SIGN_IN, credentials);
-            localStorage.setItem("token", data.token);
+            if (rememberMe) {
+                localStorage.setItem("remembered_employee_id", credentials.employee_id);
+                localStorage.setItem("token", data.token); // Store token in localStorage for persistence
+            } else {
+                localStorage.removeItem("remembered_employee_id");
+                sessionStorage.setItem("token", data.token); // Store token in sessionStorage (expires on tab close)
+            }
+
             navigate(ENDPOINTS.DASHBOARD);
         } catch (error) {
             setError(error.response?.data?.message || "Invalid Employee ID or password");
@@ -55,17 +73,46 @@ const SignInPage = () => {
                     <form className="space-y-4" onSubmit={handleSignIn}>
                         <div>
                             <label className="block text-gray-700 font-medium">Employee ID</label>
-                            <input type="text" name="employee_id" placeholder="Employee ID" onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-deepGreen" required />
+                            <input 
+                                type="text" 
+                                name="employee_id" 
+                                placeholder="Employee ID" 
+                                value={credentials.employee_id} 
+                                onChange={handleChange} 
+                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-deepGreen" 
+                                required 
+                            />
                         </div>
                         <div>
                             <label className="block text-gray-700 font-medium">Password</label>
-                            <input type="password" name="password" placeholder="Password" onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-deepGreen" required />
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    placeholder="Password"
+                                    onChange={handleChange}
+                                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-deepGreen pr-10"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Remember Me & Forgot Password */}
                         <div className="flex justify-between items-center text-sm">
                             <label className="flex items-center text-gray-700">
-                                <input type="checkbox" className="mr-2 text-deepGreen" />
+                                <input 
+                                    type="checkbox" 
+                                    checked={rememberMe} 
+                                    onChange={() => setRememberMe(!rememberMe)} 
+                                    className="mr-2 text-deepGreen" 
+                                />
                                 Remember me
                             </label>
                             <a href="#" className="text-deepGreen font-semibold hover:underline">Forgot Password?</a>
